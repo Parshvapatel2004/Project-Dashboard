@@ -70,5 +70,52 @@ function todoList() {
     taskCheckbox.checked = false;
   });
 }
-
 todoList();
+
+function dailyPlanner() {
+  let dayPlanner = document.querySelector(".day-planner");
+  let dayPlanData = JSON.parse(localStorage.getItem("dayPlanData")) || {};
+  var hours = Array.from(
+    { length: 18 },
+    (elem, idx) => `${6 + idx}:00 - ${7 + idx}:00`
+  );
+
+  let wholeDaySum = "";
+  hours.forEach(function (elem, idx) {
+    var saveData = dayPlanData[idx] || "";
+    wholeDaySum += `
+  <div class="day-planner-time">
+  <p>${elem}</p>
+  <input  id=${idx} type="text" placeholder="..." value=${saveData} >
+  </div>`;
+  });
+  dayPlanner.innerHTML = wholeDaySum;
+
+  let dayPlannerInput = document.querySelectorAll(".day-planner input");
+
+  dayPlannerInput.forEach(function (elem) {
+    elem.addEventListener("input", function () {
+      // console.log(elem.value);
+      dayPlanData[elem.id] = elem.value;
+      console.log(dayPlanData);
+
+      localStorage.setItem("dayPlanData", JSON.stringify(dayPlanData));
+    });
+  });
+}
+dailyPlanner();
+
+function motivationalQuote() {
+  let motivationQuote = document.querySelector(".motivation-2 h1");
+  let motivationAuthor = document.querySelector(".motivation-3 h2");
+
+  async function fetchQuote() {
+    let response = await fetch("https://api.quotable.io/random");
+    let data = await response.json();
+    motivationQuote.innerHTML = data.content;
+    motivationAuthor.innerHTML = data.author;
+  }
+
+  fetchQuote();
+}
+motivationalQuote();
